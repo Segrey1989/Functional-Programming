@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+
+    <title>reveal.js</title>
+
+    <link rel="stylesheet" href="reveal.js-3.7.0/css/reveal.css" />
+	<link rel="stylesheet" href="reveal.js-3.7.0/css/theme/black.css" />
+	<link rel="stylesheet" href="reveal.js-3.7.0/css/myCss.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="reveal.js-3.7.0/lib/css/zenburn.css" />
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.type = "text/css";
+      link.href = window.location.search.match(/print-pdf/gi)
+        ? "reveal.js-3.7.0/css/print/pdf.css"
+        : "reveal.js-3.7.0/css/print/paper.css";
+      document.getElementsByTagName("head")[0].appendChild(link);
+    </script>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+		  <section>
+			 <p> <strong> What is functional programming ?</strong></p>
+		  </section>
+		  
+          <section>
+            <p>
+              It is a programming paradigm based on the use of functions.
+              Everything is a function:
+            </p>
+		  </section>
+		  
+          <section>
+            <p>1. calculations occur inside functions</p>
+            <pre><code>const add = (a, b) => a + b;</code></pre>
+		  </section>
+		  
+          <section>
+            <p>2. variables are replaced by functions</p>
+            <pre><code>const five = () => 5;</code></pre>
+		  </section>
+		  
+          <section>
+            <p>3. cycles are replaced by functions</p>
+            <pre><code>
+// usual cycle
+let acc = 0;
+for (leti = 1; i <= 10; ++i)
+  acc += i;
+console.log(acc); // 55
+					
+// recursion
+function sumRange(start, end, acc) {
+  if (start > end)
+    return acc;
+  return sumRange(start + 1, end, acc + start)
+}
+console.log(sumRange(1, 10, 0)); // 55
+	        </code></pre>
+            <p>Functional programming uses recursion to execute a loop.</p>
+		  </section>  
+		</section>
+		
+        <section>
+          <section><p><strong>But functions must be:</strong></p></section>
+          <section>
+            <p>
+              <strong>Pure higher order functions</strong> - it means does not change the
+              arguments passed to it, does not affect the external environment
+              (change of global variables, output to the console ...). When
+              function called repeatedly with the same arguments, the result
+              will always be the same.
+            </p>
+            <pre><code>
+const mult = (x, y)=> x * y;
+mult(5,2); //result always 10
+
+let someNum = 8;
+// it is not pure function
+function impureHalf() {
+  return someNum / 2;
+}
+			</code></pre>
+		  </section>
+
+		  <section>
+			  <p><strong>Higher-order functions</strong> — accept functions as arguments or return functions. 
+				  In JS, functions are first-class objects, so they can be passed as a parameter,
+				   returned from a function, assigned to a variable:</p>
+				   <pre ><code>
+// The function is passed as a parameter
+document.querySelector('.someElement').addEventListener('click', () => {
+  // make something
+});
+				   </code></pre>
+				   <pre><code>
+// The function return as result
+function whenMeetingJohn() {
+  return function() {
+  alert('Hi!');
+  }
+}
+var atLunchToday = whenMeetingJohn();
+atLunchToday(); // «Hi!"
+                   </code></pre>
+				   <pre><code>
+// The function is assigned to a variable
+const double = function(x) {
+  return x * 2;
+}
+const timesTwo = double;
+timesTwo(4); // результат: возвращает 8</code></pre>
+		  </section>
+		</section>
+
+		  <section>
+			  <p>Functional languages ​​cannot eliminate side effects, they can only isolate them. 
+				  As long as programs have interfaces that interact with the real world, 
+				  some parts of any program must be unclean. 
+				  The goal is to minimize the amount of dirty code and separate it from the rest of the program.</p>
+		  </section>
+
+		<section>
+		  <section>
+			  <p><strong>Instruments of fuctional programming:</strong></p>
+			  <ol>
+				  <li>closures</li>
+				  <li> currying</li>
+				  <li>composition</li>
+			  </ol>
+		  </section>
+
+		  <section>
+			  <p><strong>Closures</strong></p>
+		<p>	This is a functions that remembers the lexical environment in which it was created
+			 (that is, it stores the state of the variables of the parent function)</p>
+			<pre><code>
+const add = (x) => {
+  return function(y){
+	return x + y;
+  }
+};				
+let increment = add(1);
+const addTEn = add(10);</code></pre> 
+		  </section>
+
+		  <section>
+			  <p><strong>Currying</strong></p>
+			  <p> This is a method for constructing functions that allows partial application of function arguments. 
+				  This means that you can pass all the arguments expected by the function and get the result or pass some of these arguments 
+				  and get back the function that is waiting for the remaining arguments.
+					The process of breaking down a function into a series of functions that each take a single argument.</p>
+		  <pre><code>
+//usual function which takes 3 arguments
+const mult = (a, b, c) => {
+  return a * b * c;
+}
+mult(2,3,4) // 60
+		  
+//carried function which takes 1 argument and return new function
+// until all arguments are not provided
+// that is possible because JS support closures
+const mult = (a) => {
+  return (b) => {
+	return (c) => 
+	   a * b * c;
+	}    
+  }
+mult(5)(4)(3) //60</code></pre>
+			</section>
+
+			<section>
+				<p>General curry function for unknown function with arbitrary number of parameters:</p>
+				<pre><code>
+// example of function which we will pass to curry function
+const f = (...args) => {
+  return args.reduce((x, ac) => ac + x, 0);
+}
+						
+// curry function which takes function and parameters for this function
+  const curry = (func, ...args) => {
+    if (typeof func !== 'function') // error if the first parameter is not a function
+	  throw new Error('The first arguments must be function!')
+	return (..._args) => {
+	  return func(...args, ..._args);
+	}
+  }
+curry(f, 5,6,7)(8,9); // 35
+curry(f, 5,6,7)(); // 18</code></pre>
+			</section>
+
+			<section>
+				<p><strong>Functional composition</strong> is a mathematical concept that allows you
+					 to combine two or more functions into a new function.</p>
+					 <pre><code>
+//create an array (variables are also functions)
+const makeArray = () => [1, 2, 3, 4, 5, 6, 7, 8];
+
+// return an array of even elements
+const filterArr = (arr) => {
+  return arr.filter(x => x % 2 === 0)
+}
+							
+// return a sum of array elements
+const sum = (arr) => arr.reduce((x, ac) => ac + x);
+							
+// function which return a result of executing all func one by one
+const compose = (...funcs) => {
+  const funcArr = funcs; // we can't change parameters in fp
+    return (val) => funcArr.reduce((fn1, fn2) => fn2(fn1), val)
+}
+							
+compose(makeArray, filterArr, sum)(); // 20</code></pre>
+			</section>
+
+			<section>
+				<p><strong>Reason of function composition</strong> - code reuse. We try to make simple functions, 
+					which take one parameter and return one result. After that we could compose that in different order. 
+					Also if functions takes more than one parameter it makes them more specific,
+					 what reduces the possibility of their reuse.</p>
+			</section>
+
+			<section>
+				<p>We could make composition of functions using arrow functions</p>
+			<pre><code>
+const makeArray = () => [1, 2, 3, 4, 5, 6, 7, 8];
+const filterArr = (arr) => {
+  return arr.filter(x => x % 2 === 0)
+}
+const sum = (arr) => arr.reduce((x, ac) => ac + x);
+sum(filterArr(makeArray()));</code></pre>
+					<p>but that gives a big number of brackets, that may lead to an error if we forget to close one of them</p>
+			</section>
+		</section>
+
+		<section>
+			<p>Js consist a lot of elements of functional programming (closures, high-ordered functions,
+				 first class objects, arrow functions, array methods like map, reduce,  filter ..., 
+				 but there are few libraries which makes functional code clear. One of them is Lodash )</p>
+		</section>
+
+		<section>
+			<section>
+				<p><strong>Lodash</strong></p>
+			    <p> is a JavaScript library which provides utility functions for common programming tasks using the functional programming paradigm (wikipedia). The main reason to use Lodash is cross-browser compatibility (if the method is supported - browser use the native method, in other case - write the equivalent code ). Also it expands number of methods for work with data.
+					Also there is a special module for work in functional style Lodash/fp</p>
+				<a href="https://hackernoon.com/function-composition-with-lodash-d30eb50153d1" target="_blank">more about that:</a>
+			</section>
+
+			<section>
+			  <p><strong>_.curry()</strong></p>
+			  <p>returns a new function which accumulating and fixing parameters for subsequent calls. When all parameters are passed - the function are invoked.</p>
+			  <pre><code>
+const calc = (a, b, sinA) => a * b * sinA;
+// using Lodash for carrying
+const curry = _.curry(calc)
+curry(2)(5)(0.5) // 5
+curry(2, 5)(0.5) // 5
+			  </code></pre>
+			</section>
+
+			<section>
+				<p><strong>_.flow()</strong></p>
+				<p>Creates a function that returns the result of invoking the given functions
+					 with the this binding of the created function, where each successive invocation is supplied the return value
+					of the previous.</p>
+				<pre><code>
+const makeArray = () => [1, 2, 3, 4, 5, 6, 7, 8];
+const filterArr = (arr) => {
+  return arr.filter(x => x % 2 === 0)
+}
+const sum = (arr) => arr.reduce((x, ac) => ac + x);
+const f = _.flow(makeArray, filterArr,  sum)
+f() // 20</code></pre>
+			</section>
+		</section>
+
+		<section>
+		  <p><strong>Advantage of FP:</strong></p>
+		  <ol>
+			<li><strong>Testing </strong>- data is immutable and using of pure functions give you possibility to find errors quiquer
+				because it don't change the external code.</li>
+			<li><strong>Debug </strong>- it is more simple to solve a problem because the error in a function
+				don't depends of external code. </li>
+			<li><strong>Multithreading</strong> - the functional program is immediately ready for parallelization without any changes</li>
+		  </ol>
+		</section>
+
+
+      </div>
+    </div>
+
+    <script src="reveal.js-3.7.0/lib/js/head.min.js"></script>
+    <script src="reveal.js-3.7.0/js/reveal.js"></script>
+
+    <script>
+      // More info about config & dependencies:
+      // - https://github.com/hakimel/reveal.js#configuration
+      // - https://github.com/hakimel/reveal.js#dependencies
+      Reveal.initialize({
+        dependencies: [
+          { src: "reveal.js-3.7.0/plugin/markdown/marked.js" },
+          { src: "reveal.js-3.7.0/plugin/markdown/markdown.js" },
+          { src: "reveal.js-3.7.0/plugin/notes/notes.js", async: true },
+          {
+            src: "reveal.js-3.7.0/plugin/highlight/highlight.js",
+            async: true,
+            callback: function() {
+              hljs.initHighlightingOnLoad();
+            }
+          }
+        ]
+      });
+    </script>
+  </body>
+</html>

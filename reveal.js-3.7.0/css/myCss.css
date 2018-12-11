@@ -1,0 +1,23 @@
+
+.reveal section p, .reveal section ol li {
+    font-size: 30px;
+    padding: 0px;
+    margin: 0;
+    color: #f0ec18;
+}
+
+.reveal pre {
+	width: 100%;
+	padding: 0;
+	margin: 2%;
+	overflow: auto;
+	font-size: 16px;
+	line-height: 20px;
+	background: #efefef;
+	border: 1px solid #777;
+}
+
+.reveal strong, .reveal a {
+    font-size: 34px;
+    color: #e48130;
+}
